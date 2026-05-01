@@ -31,14 +31,14 @@ module.exports = async function handler(req, res) {
         quantity: item.quantity,
       })),
       mode: 'payment',
-      success_url: 'https://yoursite.webflow.io/success',
-      cancel_url: 'https://yoursite.webflow.io/cart',
+      success_url: 'https://masters-meat-box.webflow.io/success',
+      cancel_url: 'https://masters-meat-box.webflow.io/cart',
     });
 
     return res.status(200).json({ url: session.url });
 
   } catch (error) {
-    console.error('Stripe error:', error);
+    // console.error('Stripe error:', error);
     return res.status(500).json({ error: error.message });
   }
 };
