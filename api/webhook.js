@@ -7,10 +7,17 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const sig = req.headers['stripe-signature'];
+  
+  let rawBody = '';
+  await new Promise((resolve, reject) => {
+    req.on('data', chunk => { rawBody += chunk; });
+    req.on('end', resolve);
+    req.on('error', reject);
+  });
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
   } catch (err) {
     console.error('Webhook Error:', err.message);
     return res.status(400).send('Webhook Error: ' + err.message);
@@ -27,7 +34,5 @@ export default async function handler(req, res) {
 }
 
 export const config = {
-  api: {
-    bodyParser: false
-  }
+  api: { bodyParser: false }
 };
